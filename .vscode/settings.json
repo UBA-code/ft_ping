@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "time.h": "c",
+    "ft_ping.h": "c"
+  },
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["markdown", "latex"]
+}
