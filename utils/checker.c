@@ -6,11 +6,11 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/13 00:31:27 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:53:45 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_ping.h"
+#include "../includes/ft_ping.h"
 
 void is_valid_argument(char *arg)
 {
@@ -72,7 +72,7 @@ void argumentsChecker(char **args)
 		}
 		else
 		{
-			// addressValidator(*args);
+			addressValidator(*args);
 			ping_struct->host = *args;
 		}
 		args++;

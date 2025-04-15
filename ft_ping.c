@@ -6,26 +6,43 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/13 00:30:53 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/15 15:02:24 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ping.h"
+#include "./includes/ft_ping.h"
 
-void ft_error(int code, char *msg)
+void ft_error(int code, char *msg, bool readErrno)
 {
-	printf("ping failed: %s\n", msg);
-	// system("leaks a.out");
+	if (readErrno)
+	{
+		perror(msg);
+	}
+	else
+	{
+		printf("ft_ping: %s\n", msg);
+	}
+	freeResources();
 	exit(code);
 }
 
 int main(int ac, char *av[])
 {
-	ping_struct = calloc(sizeof(ping), sizeof(ping));
-
+	if (geteuid())
+		ft_error(1, "Please run the executable with root permessions", false);
 	if (ac <= 1)
-		ft_error(1, "usage: ping [ip-address]\n");
+	{
+		ft_error(64, "\
+missing host operand\n\
+Try 'ft_ping -?' for more information.",
+						 false);
+	}
+
+	ping_struct = calloc(sizeof(ping), sizeof(ping));
 	argumentsChecker(av + 1);
+
+	if (ping_struct->options.usageIsSpecified)
+		printUsage();
 	initialize_struct();
 
 	//* handle the ctr + c signal

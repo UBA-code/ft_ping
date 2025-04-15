@@ -36,9 +36,9 @@
 		{
 			"id": "pointer:pointer",
 			"typeName": "pointer",
-			"x": 962.2533632631968,
-			"y": -83.27121816267669,
-			"lastActivityTimestamp": 1743217189298,
+			"x": 501.1519505057155,
+			"y": 753.788256618192,
+			"lastActivityTimestamp": 1744638149353,
 			"meta": {}
 		},
 		{
@@ -6426,9 +6426,9 @@
 			"typeName": "shape"
 		},
 		{
-			"x": -546.613446316478,
-			"y": 385.29622733535035,
-			"z": 0.859743579550874,
+			"x": 251.03622050722254,
+			"y": 204.51234509578933,
+			"z": 0.33564053980005687,
 			"meta": {},
 			"id": "camera:page:page",
 			"typeName": "camera"
@@ -6619,9 +6619,9 @@
 			"editingShapeId": null,
 			"croppingShapeId": null,
 			"selectedShapeIds": [
-				"shape:RgXrjV6pQ6cSnODSAWP2I"
+				"shape:R6ideLD4n1PEzO7x66Wy5"
 			],
-			"hoveredShapeId": "shape:LU7e6Mnu7OWG5kJRTyphc",
+			"hoveredShapeId": "shape:R6ideLD4n1PEzO7x66Wy5",
 			"erasingShapeIds": [],
 			"hintingShapeIds": [],
 			"focusedGroupId": null,
@@ -10851,6 +10851,19 @@
 			"typeName": "shape"
 		},
 		{
+			"id": "asset:-434874843",
+			"typeName": "asset",
+			"type": "bookmark",
+			"props": {
+				"src": "https://github.com/bl000m/ft_ping?tab=readme-ov-file",
+				"description": "ft_ping is a C program that replicates the functionality of the ping command. It allows users to test the accessibility of another machine through the IP network and measures the round-trip time fo...",
+				"image": "https://opengraph.githubassets.com/43370389fe0a9b060c94cb9ffcf9e6e27d9f7e36a4905795f9eb4f7ee55120de/bl000m/ft_ping",
+				"favicon": "https://github.githubassets.com/favicons/favicon.svg",
+				"title": "GitHub - bl000m/ft_ping: ft_ping is a C program that replicates the functionality of the ping command. It allows users to test the accessibility of another machine through the IP network and measures the round-trip time for packets. Developed as a project for network programming, ft_ping is designed to work on Debian-based systems."
+			},
+			"meta": {}
+		},
+		{
 			"x": 209.1731008437667,
 			"y": -105.47197338822633,
 			"rotation": 0,
@@ -10914,7 +10927,7 @@
 			"type": "geo",
 			"props": {
 				"w": 1680.8874917145035,
-				"h": 869.7244851814037,
+				"h": 971.803092164964,
 				"geo": "rectangle",
 				"color": "black",
 				"labelColor": "black",
@@ -11206,10 +11219,7 @@
 		{
 			"followingUserId": null,
 			"opacityForNextShape": 1,
-			"stylesForNextShape": {
-				"tldraw:color": "red",
-				"tldraw:dash": "dashed"
-			},
+			"stylesForNextShape": {},
 			"brush": null,
 			"scribbles": [],
 			"cursor": {
@@ -11223,8 +11233,8 @@
 			"screenBounds": {
 				"x": 0,
 				"y": 0,
-				"w": 724,
-				"h": 595
+				"w": 932,
+				"h": 475
 			},
 			"insets": [
 				false,
@@ -11283,6 +11293,25 @@
 			},
 			"parentId": "page:page",
 			"index": "af6Jk",
+			"typeName": "shape"
+		},
+		{
+			"x": 594.539110639504,
+			"y": 401.8582548352293,
+			"rotation": 0,
+			"isLocked": false,
+			"opacity": 1,
+			"meta": {},
+			"id": "shape:tiCZIIJBM7FarfmiwPLtn",
+			"type": "bookmark",
+			"props": {
+				"url": "https://github.com/bl000m/ft_ping?tab=readme-ov-file",
+				"w": 300,
+				"h": 320,
+				"assetId": "asset:-434874843"
+			},
+			"parentId": "page:page",
+			"index": "amAK6",
 			"typeName": "shape"
 		},
 		{

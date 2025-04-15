@@ -6,11 +6,11 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/13 00:31:16 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/15 14:40:19 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_ping.h"
+#include "../includes/ft_ping.h"
 
 void pinger()
 {
@@ -24,13 +24,17 @@ void pinger()
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_RAW;
 	hints.ai_protocol = IPPROTO_ICMP;
+
 	if (getaddrinfo(ping_struct->host, NULL, &hints, &results))
-		ft_error(1, "getaddrinfo failed");
+		ft_error(1, "unknown host", false);
 
 	if (!inet_ntop(AF_INET, &((struct sockaddr_in *)results->ai_addr)->sin_addr, ip_str, INET_ADDRSTRLEN))
-		ft_error(1, "inet_ntop failed");
+		ft_error(1, "inet_ntop failed", false);
 
-	printf("PING %s (%s): 56 data bytes\n", ping_struct->host, ip_str);
+	printf("PING %s (%s): 56 data bytes", ping_struct->host, ip_str);
+	if (ping_struct->options.verboseIsSpecified)
+		printf(", id 0x%x = %d", ping_struct->icmpHeader.id, ping_struct->icmpHeader.id);
+	printf("\n");
 	while (1)
 	{
 		struct timeval startTime, endTime;
@@ -44,13 +48,13 @@ void pinger()
 
 		//* save the start time before send the packet
 		if (gettimeofday(&startTime, NULL))
-			ft_error(1, "gettimeofday failed");
+			ft_error(1, "gettimeofday", true);
 
 		//* send the packet
 		if (
 				sendto(ping_struct->socket, &ping_struct->icmpHeader, 64, 0, results->ai_addr, results->ai_addrlen) == -1)
 		{
-			ft_error(1, "sendto failed");
+			ft_error(1, "ft_ping: sending packet", true);
 		}
 
 		//* increment the packet transmitted if the sendTo run successfuly
@@ -58,14 +62,14 @@ void pinger()
 
 		//* set timeout for socket if no data come in 1 second, move on instead of hanging forever waiting
 		if (setsockopt(ping_struct->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)))
-			ft_error(1, "Error: setsockopt failed");
+			ft_error(1, "Error: setsockopt failed", false);
 
 		//* wait for packets
 		bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, NULL);
 
 		//* get the end time when the packet came
 		if (gettimeofday(&endTime, NULL))
-			ft_error(1, "gettimeofday failed");
+			ft_error(1, "gettimeofday failed", false);
 
 		//* exctract the ip header and the icmp reply
 		ipHeader = (ip_hdr *)recvBuffer;
@@ -97,8 +101,13 @@ void pinger()
 						 ipHeader->ttl,
 						 rtt); // 20 bytes of the ip header
 		}
+		// else if (reply->type == ICMP_UNREACH_HOST && ping_struct->options.verboseIsSpecified)
+		// {
+		// 	printf("ICMP Host Unreachable from %s for icmp_seq=%d\n",
+		// 				 ip_str, ping_struct->icmpHeader.sequence);
+		// }
 		// //* if the bytes received less than 0, that's mean the request timedout
-		// else if (bytesReceived < 0)
+		// else if (bytesReceived < 0 && ping_struct->options.verboseIsSpecified)
 		// {
 		// 	printf("Request timeout for icmp_seq %d\n", ping_struct->icmpHeader.sequence);
 		// }

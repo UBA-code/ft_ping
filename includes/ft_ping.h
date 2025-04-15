@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/13 00:31:08 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/15 14:52:06 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -89,7 +90,7 @@ ping *ping_struct;
 
 #define ECHO_REQUEST_CODE 0
 
-void ft_error(int code, char *msg);
+void ft_error(int code, char *msg, bool readErrno);
 void argumentsChecker(char **args);
 u_short calcCheckSum(void *packet, int length);
 void finisher(int signum);
@@ -101,3 +102,5 @@ double getAvg(rtt_list_head *head);
 double getStdDev(rtt_list_head *head);
 void initialize_struct();
 void pinger();
+void printUsage();
+void freeResources();
