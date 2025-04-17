@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 16:46:57 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 21:00:09 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,10 @@ void pinger()
 		int bytesReceived;
 		icmp_hdr *reply = NULL;
 		ip_hdr *ipHeader;
-		struct timeval timeout = {1, 0}; //* for setting timeout to the socket
+		const long long timeToWait = ping_struct->options.timeToWaitResponse == -1
+																		 ? 1
+																		 : ping_struct->options.timeToWaitResponse;
+		struct timeval timeout = {timeToWait, 0}; //* for setting timeout to the socket
 
 		bzero(&recvBuffer, sizeof(recvBuffer));
 
@@ -75,6 +78,8 @@ void pinger()
 
 		//* wait for packets
 		bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, NULL);
+
+		printf("bytesReceived: %d\n", bytesReceived);
 
 		//* get the end time when the packet came
 		if (gettimeofday(&endTime, NULL))
@@ -102,13 +107,14 @@ void pinger()
 			//* increment the packet received when the recvfrom response valid
 			ping_struct->packetReceived++;
 
-			//* print the log message
-			printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
-						 bytesReceived - 20,
-						 ip_str,
-						 reply->sequence,
-						 ipHeader->ttl,
-						 rtt); // 20 bytes of the ip header
+			//* if the quit option is not specified print the log message
+			if (!ping_struct->options.quitModeIsSpecified)
+				printf("%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
+							 bytesReceived - 20,
+							 ip_str,
+							 reply->sequence,
+							 ipHeader->ttl,
+							 rtt); // 20 bytes of the ip header
 		}
 		// else if (reply->type == ICMP_UNREACH_HOST && ping_struct->options.verboseIsSpecified)
 		// {

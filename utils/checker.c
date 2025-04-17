@@ -6,15 +6,20 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 16:46:04 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 20:58:58 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ping.h"
 
-int numValidator(char *num)
+int isSupportedArgument(char arg)
 {
-	int number = 0;
+	return (arg != 'v' && arg != '?' && arg != 'c' && arg != 'q' && arg != 'W');
+}
+
+long long numValidator(char *num)
+{
+	long long number = 0;
 	int sign = 1;
 	int signsCount = 0;
 
@@ -25,7 +30,7 @@ int numValidator(char *num)
 		if ((!isnumber(num[i]) && num[i] != '+' && num[i] != '-') ||
 				signsCount > 1)
 		{
-			printf("ping: invalid value (`%s' near `%s')\n", num, num + i);
+			printf("ft_ping: invalid value (`%s' near `%s')\n", num, num + i);
 			freeResources();
 			exit(1);
 		}
@@ -37,7 +42,7 @@ int numValidator(char *num)
 	return number * sign;
 }
 
-void is_valid_argument(char *arg, char ***arguments)
+void setSpecifiedOptions(char *arg, char ***arguments)
 {
 	char **argv = *arguments;
 
@@ -47,25 +52,52 @@ void is_valid_argument(char *arg, char ***arguments)
 			ping_struct->options.verboseIsSpecified = true;
 		else if (*arg == '?')
 			ping_struct->options.usageIsSpecified = true;
-		else if (*arg == 'c')
+		else if (*arg == 'c' || *arg == 'W')
 		{
 			if (*(arg + 1))
 			{
-				printf("ping: invalid value (`%c' near `%s')\n", *arg, arg);
+				printf("ft_ping: invalid value (`%s' near `%s')\n", arg, arg);
 				freeResources();
 				exit(1);
 			}
 			if (*(argv + 1) && argv++)
-				ping_struct->options.countIsSpecified = numValidator(*argv);
+			{
+				if (*arg == 'c')
+				{
+					ping_struct->options.countIsSpecified = numValidator(*argv);
+				}
+				else
+				{
+					ping_struct->options.timeToWaitResponse = numValidator(*argv);
+					if (ping_struct->options.timeToWaitResponse > INT_MAX)
+					{
+						printf("ft_ping: option value too big: %lld\n",
+									 ping_struct->options.timeToWaitResponse);
+						freeResources();
+						exit(1);
+					}
+					else if (ping_struct->options.timeToWaitResponse < 0)
+					{
+						printf("ft_ping: option value too small: %lld\n",
+									 ping_struct->options.timeToWaitResponse);
+						freeResources();
+						exit(1);
+					}
+				}
+			}
 			else
 			{
-				ft_error(1, "option requires an argument -- 'c'\n\
-Try 'ft_ping -?' for more information.",
-								 false);
+				printf("ft_ping: option requires an argument -- '%c'\n\
+Try 'ft_ping -?' for more information.\n",
+							 *arg);
+				freeResources();
+				exit(1);
 			}
 			// * skip the packets count argument for the next loop
 			(*arguments)++;
 		}
+		else if (*arg == 'q')
+			ping_struct->options.quitModeIsSpecified = true;
 		else
 		{
 			printf("ft_ping: invalid option -- '%c'\n", *arg);
@@ -117,14 +149,14 @@ void argumentsChecker(char **args)
 			//* check that the arguments are valid before check each one
 			for (char *currentArg = *args; *currentArg; currentArg++)
 			{
-				if (*currentArg != 'v' && *currentArg != '?' && *currentArg != 'c')
+				if (isSupportedArgument(**args))
 				{
-					printf("invalid value (`%c' near `%c')\n", *currentArg, *currentArg);
+					printf("ft_ping: invalid value (`%c' near `%c')\n", *currentArg, *currentArg);
 					freeResources();
 					exit(1);
 				}
 			}
-			is_valid_argument(*args, &args);
+			setSpecifiedOptions(*args, &args);
 		}
 		else
 		{

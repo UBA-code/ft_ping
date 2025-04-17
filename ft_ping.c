@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 16:16:20 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 19:50:12 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,12 @@ Try 'ft_ping -?' for more information.",
 	}
 
 	ping_struct = calloc(sizeof(ping), sizeof(ping));
+	initialize_struct();
+
 	argumentsChecker(av + 1);
 
 	if (ping_struct->options.usageIsSpecified)
-	printUsage();
-	initialize_struct();
+		printUsage();
 
 	//* handle the ctr + c signal
 	signal(SIGINT, finisher);

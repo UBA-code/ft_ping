@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:19 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 14:30:59 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 20:58:14 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void initialize_struct()
 	ping_struct->min_rtt = -1;
 	ping_struct->max_rtt = 0;
 	ping_struct->avg_rtt = 0;
+	ping_struct->options.countIsSpecified = 0;
+	ping_struct->options.timeToWaitResponse = -1;
 
 	ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
 	ping_struct->rttListHead->node = 0;
