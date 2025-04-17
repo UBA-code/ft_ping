@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:21 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/15 14:52:14 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:13:17 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void finisher(int signum)
 		(void)signum;
 
 		//* print the final log message
-		printf("\n--- %s ping statistics ---\n", ping_struct->host);
+		printf("--- %s ping statistics ---\n", ping_struct->host);
 		printf("%d packets transmitted, ", ping_struct->packetsTransmitted);
 		printf("%d packets received, ", ping_struct->packetReceived);
 		if (ping_struct->packetReceived == 0 && ping_struct->packetsTransmitted > 0)

@@ -1,2 +1,4 @@
 *.o
 .vscode
+my_ping.txt
+standard_ping.txt

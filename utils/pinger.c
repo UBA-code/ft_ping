@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/15 14:40:19 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:46:57 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,16 @@ void pinger()
 	if (ping_struct->options.verboseIsSpecified)
 		printf(", id 0x%x = %d", ping_struct->icmpHeader.id, ping_struct->icmpHeader.id);
 	printf("\n");
-	while (1)
+
+	//* if the -c if specefied and it's value more than 0, increment the value to prevent the value from being 0
+	if (ping_struct->options.countIsSpecified)
+		ping_struct->options.countIsSpecified++;
+
+	//* either -c not specified or it's value is less or equal 0 run the loop infinitely
+	//* if the -c value more than 0, run the loop for the amount of specific packets
+
+	while (ping_struct->options.countIsSpecified <= 0 ||
+				 ping_struct->options.countIsSpecified-- > 1) //* if we loop untill 0, the first condition will be applied and the loop will repeat infinitely
 	{
 		struct timeval startTime, endTime;
 		float rtt; //* round trip time
@@ -57,7 +66,7 @@ void pinger()
 			ft_error(1, "ft_ping: sending packet", true);
 		}
 
-		//* increment the packet transmitted if the sendTo run successfuly
+		//* increment the packet transmitted if the sendTo run successfully
 		ping_struct->packetsTransmitted++;
 
 		//* set timeout for socket if no data come in 1 second, move on instead of hanging forever waiting
@@ -71,7 +80,7 @@ void pinger()
 		if (gettimeofday(&endTime, NULL))
 			ft_error(1, "gettimeofday failed", false);
 
-		//* exctract the ip header and the icmp reply
+		//* extract the ip header and the icmp reply
 		ipHeader = (ip_hdr *)recvBuffer;
 		reply = (icmp_hdr *)&recvBuffer[20];
 
@@ -116,6 +125,10 @@ void pinger()
 		ping_struct->icmpHeader.sequence++;
 		ping_struct->icmpHeader.checksum = 0;
 		ping_struct->icmpHeader.checksum = calcCheckSum(&(ping_struct->icmpHeader), 64);
-		sleep(1);
+
+		//* prevent sleep in last packet
+		if (ping_struct->options.countIsSpecified > 1 || ping_struct->options.countIsSpecified <= 0)
+			sleep(1);
 	}
+	finisher(0);
 }

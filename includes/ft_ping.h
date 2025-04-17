@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/15 14:52:06 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:37:44 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,9 @@ typedef struct s_ip_hdr
 
 typedef struct s_ping_options
 {
-	int verboseIsSpecified;
-	int usageIsSpecified;
+	bool verboseIsSpecified;
+	bool usageIsSpecified;
+	int countIsSpecified; //* the specefied amount is also assigned into this variable
 } ping_options;
 
 //* program main struct
