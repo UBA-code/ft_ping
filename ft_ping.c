@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 19:50:12 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/18 10:11:13 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,20 @@ void ft_error(int code, char *msg, bool readErrno)
 	}
 	else
 	{
-		printf("ft_ping: %s\n", msg);
+		fprintf(stderr, "ft_ping: %s\n", msg);
 	}
 	freeResources();
 	exit(code);
+}
+
+void ft_error_printf(int errCode, char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	vfprintf(stderr, format, args);
+	va_end(args);
+	freeResources();
+	exit(errCode);
 }
 
 int main(int ac, char *av[])

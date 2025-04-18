@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 20:58:26 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/18 10:12:41 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <stdarg.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -107,3 +108,4 @@ void initialize_struct();
 void pinger();
 void printUsage();
 void freeResources();
+void ft_error_printf(int errCode, char *format, ...);

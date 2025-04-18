@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/17 21:00:09 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/18 10:43:47 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ void pinger()
 	struct addrinfo *results;
 	char recvBuffer[84];
 	char ip_str[INET_ADDRSTRLEN];
+	const long long timeToWait = ping_struct->options.timeToWaitResponse == -1
+																	 ? 1
+																	 : ping_struct->options.timeToWaitResponse;
+	struct timeval timeout = {timeToWait, 0}; //* for setting timeout to the socket
 
 	bzero(&ip_str, sizeof(ip_str));
 	bzero(&hints, sizeof(struct addrinfo));
@@ -25,9 +29,14 @@ void pinger()
 	hints.ai_socktype = SOCK_RAW;
 	hints.ai_protocol = IPPROTO_ICMP;
 
+	//* set timeout for socket if no data come in 1 second, move on instead of hanging forever waiting
+	if (setsockopt(ping_struct->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)))
+		ft_error(1, "Error: setsockopt failed", false);
+
 	if (getaddrinfo(ping_struct->host, NULL, &hints, &results))
 		ft_error(1, "unknown host", false);
 
+	//* get the ip address of the host
 	if (!inet_ntop(AF_INET, &((struct sockaddr_in *)results->ai_addr)->sin_addr, ip_str, INET_ADDRSTRLEN))
 		ft_error(1, "inet_ntop failed", false);
 
@@ -51,10 +60,6 @@ void pinger()
 		int bytesReceived;
 		icmp_hdr *reply = NULL;
 		ip_hdr *ipHeader;
-		const long long timeToWait = ping_struct->options.timeToWaitResponse == -1
-																		 ? 1
-																		 : ping_struct->options.timeToWaitResponse;
-		struct timeval timeout = {timeToWait, 0}; //* for setting timeout to the socket
 
 		bzero(&recvBuffer, sizeof(recvBuffer));
 
@@ -71,10 +76,6 @@ void pinger()
 
 		//* increment the packet transmitted if the sendTo run successfully
 		ping_struct->packetsTransmitted++;
-
-		//* set timeout for socket if no data come in 1 second, move on instead of hanging forever waiting
-		if (setsockopt(ping_struct->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)))
-			ft_error(1, "Error: setsockopt failed", false);
 
 		//* wait for packets
 		bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, NULL);

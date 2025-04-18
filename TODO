@@ -6,5 +6,5 @@
 === different display message in ip and hostname
 
 # must check
-=== fixing the 0 packet trans, 0 recv
+!== fixing the 0 packet trans, 0 recv
 === must re check the `bytesReceived >= 0` condition
