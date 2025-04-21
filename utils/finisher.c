@@ -6,13 +6,21 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:21 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/18 18:12:20 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:03:19 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ping.h"
 
-void finisher(int signum)
+void signalHandler(int signum)
+{
+	(void)signum;
+	finisher(true, true);
+}
+
+//* if cleanResources is true, free the resources and exit
+//* if tryHosts is true, send one packet to each host left without waiting for reply (ctrl + c case)
+void finisher(bool cleanResources, bool tryHosts)
 {
 	//* if no packets transmitted nothing must be printed
 	if (ping_struct->packetsTransmitted)
@@ -22,10 +30,8 @@ void finisher(int signum)
 		gettimeofday(&ping_struct->programEndTime, NULL);
 		// const size_t totalTimeSpent = ((ping_struct->programEndTime.tv_sec - ping_struct->programStartTime.tv_sec) * 1000) + ((ping_struct->programEndTime.tv_usec - ping_struct->programStartTime.tv_usec) / 1000);
 
-		(void)signum;
-
 		//* print the final log message
-		printf("--- %s ping statistics ---\n", ping_struct->host);
+		printf("--- %s ping statistics ---\n", ping_struct->hostsHead->host);
 		printf("%d packets transmitted, ", ping_struct->packetsTransmitted);
 		printf("%d packets received, ", ping_struct->packetReceived);
 		if (ping_struct->packetReceived == 0 && ping_struct->packetsTransmitted > 0)
@@ -52,7 +58,32 @@ void finisher(int signum)
 		printf("\n");
 	}
 
+	if (tryHosts)
+	{
+		if (ping_struct->hostsHead)
+			ping_struct->hostsHead = ping_struct->hostsHead->next;
+		t_host *currentHost = ping_struct->hostsHead;
+
+		while (currentHost)
+		{
+			ping_struct->packetsTransmitted = 0;
+			ping_struct->packetReceived = 0;
+			if (ping_struct->results)
+			{
+				freeaddrinfo(ping_struct->results); //* free the addrinfo struct
+				ping_struct->results = NULL;
+			}
+			pinger(currentHost->host, true);
+			finisher(false, false);
+			currentHost = currentHost->next;
+			ping_struct->hostsHead = ping_struct->hostsHead->next;
+		}
+	}
+
 	//* free the resources
-	freeResources();
-	exit(130);
+	if (cleanResources)
+	{
+		freeResources();
+		exit(130);
+	}
 }

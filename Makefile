@@ -1,5 +1,5 @@
 UTILS_FLDR=./utils
-SRC=ft_ping.c $(UTILS_FLDR)/initializer.c $(UTILS_FLDR)/checker.c $(UTILS_FLDR)/checksum.c $(UTILS_FLDR)/finisher.c $(UTILS_FLDR)/linked_list/rtt.c $(UTILS_FLDR)/linked_list/pendingPackets.c $(UTILS_FLDR)/pinger.c $(UTILS_FLDR)/printUsage.c $(UTILS_FLDR)/freeResources.c
+SRC=ft_ping.c $(UTILS_FLDR)/initializer.c $(UTILS_FLDR)/checker.c $(UTILS_FLDR)/checksum.c $(UTILS_FLDR)/finisher.c $(UTILS_FLDR)/linked_list/rtt.c $(UTILS_FLDR)/linked_list/hosts.c $(UTILS_FLDR)/linked_list/pendingPackets.c $(UTILS_FLDR)/pinger.c $(UTILS_FLDR)/printUsage.c $(UTILS_FLDR)/freeResources.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror

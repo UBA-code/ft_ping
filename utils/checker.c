@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 20:47:01 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:01:04 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,10 @@ void argumentsChecker(char **args)
 		//* check if current argument is a flag
 		if (**args == '-')
 		{
-			if (strlen(*args) == 1) //* mean that the argument is "-"
-				ft_error_printf(2, "ft_ping: -: Name or service not known\n");
 			++(*args);
+			//* -- is valid
+			if (**args == '-')
+				++(*args);
 			//* check that the arguments are valid before check each one
 			for (char *currentArg = *args; *currentArg; currentArg++)
 			{
@@ -134,7 +135,7 @@ void argumentsChecker(char **args)
 		else
 		{
 			addressValidator(*args);
-			ping_struct->host = *args;
+			addHost(ping_struct->hostsHead, *args);
 		}
 		args++;
 	}

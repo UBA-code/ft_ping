@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 21:06:24 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 17:53:42 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ void ft_error_printf(int errCode, char *format, ...)
 
 int main(int ac, char *av[])
 {
+	t_host *currentHost;
+	ping const_ping_struct;
+
 	if (geteuid())
 		ft_error(1, "Please run the executable with root permessions", false);
 	if (ac <= 1)
@@ -55,19 +58,53 @@ Try 'ft_ping -?' for more information.",
 
 	argumentsChecker(av + 1);
 
+	const_ping_struct = *ping_struct;
 	// printSpecifiedOptions();
 
 	if (ping_struct->options.usageIsSpecified)
 		printUsage();
 
 	//* handle the ctr + c signal
-	signal(SIGINT, finisher);
-	pinger();
+	signal(SIGINT, signalHandler);
+	currentHost = ping_struct->hostsHead;
+	while (currentHost)
+	{
+		pinger(currentHost->host, false);
+		finisher(false, false);
+		resetStruct(const_ping_struct);
+		currentHost = currentHost->next;
+	}
 	return 0;
+}
+
+void resetStruct(const ping const_ping_struct)
+{
+	ping_struct->packetsTransmitted = 0;
+	ping_struct->packetReceived = 0;
+	ping_struct->min_rtt = -1;
+	ping_struct->max_rtt = 0;
+	ping_struct->avg_rtt = 0;
+	ping_struct->options.countIsSpecified = const_ping_struct.options.countIsSpecified;
+	ping_struct->options.countAmount = const_ping_struct.options.countAmount;
+	ping_struct->options.debugModeIsSpecified = const_ping_struct.options.debugModeIsSpecified;
+	ping_struct->options.timeOutIsSpecified = const_ping_struct.options.timeOutIsSpecified;
+	ping_struct->options.timeOutAmount = const_ping_struct.options.timeOutAmount;
+	freePendingPackets(&ping_struct->pendingPacketsHead);
+	cleanList(ping_struct->rttListHead);
+	ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
+	ping_struct->rttListHead->node = 0;
 }
 
 void printSpecifiedOptions()
 {
+	t_host *current = ping_struct->hostsHead;
+	printf("### hosts ###\n");
+	while (current)
+	{
+		printf("Host: %s\n", current->host);
+		current = current->next;
+	}
+	printf("### options ###\n");
 	printf("-?: %d\n", ping_struct->options.usageIsSpecified);
 	printf("-v: %d\n", ping_struct->options.verboseIsSpecified);
 	printf("### bonus ###\n");

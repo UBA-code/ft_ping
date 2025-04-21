@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:37:47 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 19:49:25 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:44:52 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ void freePendingPackets(PendingPacket **head)
 	*head = NULL;
 }
 
-//* remove all expired packets from the list and return the number of packets that are still pending
+//* remove all expired packets from the list, return 1 if count is specified and all packets are transmitted
+//* return 0 if there are still packets in the list
 int removeExpiredPackets()
 {
 	PendingPacket *current = ping_struct->pendingPacketsHead;
@@ -149,9 +150,9 @@ int removeExpiredPackets()
 	{
 		if (ping_struct->pendingPacketsHead)
 			freePendingPackets(&ping_struct->pendingPacketsHead);
-		finisher(0);
+		return 1;
 	}
-	return len;
+	return 0;
 }
 
 void printList()

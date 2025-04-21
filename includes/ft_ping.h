@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 21:03:37 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 17:46:36 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,13 @@ typedef struct s_pendingPacket
 	PendingPacket *next;
 } PendingPacket;
 
+typedef struct s_host t_host;
+typedef struct s_host
+{
+	char *host;
+	t_host *next;
+} t_host;
+
 //* program main struct
 typedef struct f_ping
 {
@@ -104,8 +111,9 @@ typedef struct f_ping
 	fd_set readFds;
 	//*icmp header properties
 	icmp_hdr icmpHeader;
-	char *host;
+	t_host *hostsHead; //* incremented for each host
 	ping_options options;
+	struct addrinfo *results;
 	//* final results properties
 	rtt_list_head *rttListHead;
 	int packetsTransmitted, packetReceived;
@@ -121,7 +129,8 @@ extern ping *ping_struct;
 void ft_error(int code, char *msg, bool readErrno);
 void argumentsChecker(char **args);
 u_short calcCheckSum(void *packet, int length);
-void finisher(int signum);
+void finisher(bool cleanResources, bool tryHosts);
+void signalHandler(int signum);
 void pushEnd(rtt_list_head *head, double rtt);
 int getListLen(rtt_list_head *head);
 double calcRttSum(rtt_list_head *head);
@@ -129,7 +138,7 @@ void cleanList(rtt_list_head *head);
 double getAvg(rtt_list_head *head);
 double getStdDev(rtt_list_head *head);
 void initialize_struct();
-void pinger();
+void pinger(char *host, bool once);
 void printUsage();
 void freeResources();
 void ft_error_printf(int errCode, char *format, ...);
@@ -140,11 +149,14 @@ void addPacketToList(PendingPacket **head, uint16_t seq);
 PendingPacket *removePacketFromList(uint16_t seq);
 void freePendingPackets(PendingPacket **head);
 int isValidPacket(PendingPacket **head, uint16_t seq);
-void sendPacket(struct addrinfo *results, struct timeval *sendingTime);
+void sendPacket(struct addrinfo *results, struct timeval *sendingTime, bool instant);
 PendingPacket *getPacketFromList(uint16_t seq);
 int removeExpiredPackets();
 void printList();
 void printSpecifiedOptions();
 void checkAndSetOptionAmount(char arg, char *value);
+void addHost(t_host *head, char *host);
+void freeHosts(t_host *head);
+void resetStruct(const ping const_ping_struct);
 
 #endif

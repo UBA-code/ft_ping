@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:19 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 17:23:40 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 15:49:48 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void initialize_struct()
 {
+	ping_struct->hostsHead = NULL;
 	ping_struct->pendingPacketsHead = NULL;
 	//* Create socket of type raw and icmp protocol
 	ping_struct->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
@@ -28,6 +29,7 @@ void initialize_struct()
 	ping_struct->icmpHeader.id = getpid();
 	ping_struct->icmpHeader.sequence = 0;
 	ping_struct->icmpHeader.checksum = calcCheckSum(&ping_struct->icmpHeader, 64);
+	ping_struct->results = NULL;
 
 	//* initialize some propeties
 	ping_struct->packetsTransmitted = 0;

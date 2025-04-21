@@ -6,19 +6,19 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 09:10:50 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:08:20 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ping.h"
 
-void pinger()
+//* is once true, send one packet and exit without waiting for reply
+void pinger(char *host, bool once)
 {
 	struct addrinfo hints;
-	struct addrinfo *results;
 	char recvBuffer[84];
 	char ip_str[INET_ADDRSTRLEN];
-	struct timeval timeout = {1, 0}; //* for setting timeout to the socket
+	struct timeval timeout = {1, 0};
 	struct timeval sendingTime = {0, 0};
 
 	bzero(&ip_str, sizeof(ip_str));
@@ -31,22 +31,23 @@ void pinger()
 			setsockopt(ping_struct->socket, SOL_SOCKET, SO_DEBUG, &timeout, sizeof(timeout)) < 0)
 		ft_error(1, "ft_ping: setsockopt()", true);
 
-	if (getaddrinfo(ping_struct->host, NULL, &hints, &results))
+	if (getaddrinfo(host, NULL, &hints, &ping_struct->results))
 		ft_error(1, "unknown host", false);
 
 	//* get the ip address of the host
-	if (!inet_ntop(AF_INET, &((struct sockaddr_in *)results->ai_addr)->sin_addr, ip_str, INET_ADDRSTRLEN))
+	if (!inet_ntop(AF_INET, &((struct sockaddr_in *)ping_struct->results->ai_addr)->sin_addr, ip_str, INET_ADDRSTRLEN))
 		ft_error(1, "inet_ntop failed", false);
 
-	printf("PING %s (%s): 56 data bytes", ping_struct->host, ip_str);
+	printf("PING %s (%s): 56 data bytes", host, ip_str);
 	if (ping_struct->options.verboseIsSpecified)
 		printf(", id 0x%x = %d", ping_struct->icmpHeader.id, ping_struct->icmpHeader.id);
 	printf("\n");
 
 	//* main loop
-	while (1)
+	while (once || 1)
 	{
-		removeExpiredPackets();
+		if (removeExpiredPackets())
+			break;
 		struct timeval endTime;
 		float rtt; //* round trip time
 		int bytesReceived = -1;
@@ -56,12 +57,16 @@ void pinger()
 		bzero(&recvBuffer, sizeof(recvBuffer));
 
 		//* send the packet after checking the sending time and add it to the list
-		sendPacket(results, &sendingTime);
+		sendPacket(ping_struct->results, &sendingTime, once);
+
+		//* send the packet and exit (ctr + c case)
+		if (once == 1)
+			break;
 
 		//* wait for packets
 		FD_ZERO(&ping_struct->readFds);
 		FD_SET(ping_struct->socket, &ping_struct->readFds);
-		if (select(ping_struct->socket + 1, &ping_struct->readFds, NULL, NULL, &timeout) == -1)
+		if (select(ping_struct->socket + 1, &ping_struct->readFds, NULL, NULL, &timeout) == -1 && errno != EINTR) //* eintr is for the signal handler, if the error because of the signal handler it's okey
 			ft_error(1, "select()", true);
 		else if (FD_ISSET(ping_struct->socket, &ping_struct->readFds))
 		{
@@ -69,7 +74,7 @@ void pinger()
 			if (gettimeofday(&endTime, NULL))
 				ft_error(1, "gettimeofday failed", false);
 
-			bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, &results->ai_addrlen);
+			bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)ping_struct->results, &ping_struct->results->ai_addrlen);
 
 			//* extract the ip header and the icmp reply
 			ipHeader = (ip_hdr *)recvBuffer;
@@ -88,10 +93,12 @@ void pinger()
 			}
 		}
 	}
-	finisher(0);
+	freeaddrinfo(ping_struct->results);
+	ping_struct->results = NULL;
 }
 
-void sendPacket(struct addrinfo *results, struct timeval *sendingTime)
+//* if instant is true, send the packet immediately without waiting 1 second between each packet
+void sendPacket(struct addrinfo *results, struct timeval *sendingTime, bool instant)
 {
 	struct timeval currentTime;
 	time_t timeElpasedSinceLastSend;
@@ -100,8 +107,9 @@ void sendPacket(struct addrinfo *results, struct timeval *sendingTime)
 	timeElpasedSinceLastSend = (currentTime.tv_sec - sendingTime->tv_sec) * 1000 +
 														 (currentTime.tv_usec - sendingTime->tv_usec) / 1000;
 
-	if (timeElpasedSinceLastSend >= 1000.0 &&
-			(!ping_struct->options.countIsSpecified || ping_struct->options.countAmount > 0)) //* 1000ms = 1 second, send request each second
+	if ((timeElpasedSinceLastSend >= 1000.0 &&
+			 (!ping_struct->options.countIsSpecified || ping_struct->options.countAmount > 0)) ||
+			instant) //* 1000ms = 1 second, send request each second
 	{
 		addPacketToList(&ping_struct->pendingPacketsHead, ping_struct->icmpHeader.sequence);
 		//* send the packet
