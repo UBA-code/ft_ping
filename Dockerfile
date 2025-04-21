@@ -12,5 +12,6 @@ RUN cd inetutils-2.0 && \
 	./configure && \
 	make
 
+COPY . /work/ft_ping
 
 CMD [ "tail", "-f",  "/dev/null"]

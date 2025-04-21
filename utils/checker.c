@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/18 10:45:37 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/20 20:47:01 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int isSupportedArgument(char arg)
 {
-	return (arg != 'v' && arg != '?' && arg != 'c' && arg != 'q' && arg != 'W');
+	return (arg != 'v' && arg != '?' && arg != 'c' && arg != 'q' && arg != 'd' && arg != 'W');
 }
 
 long long numValidator(char *num)
@@ -27,7 +27,7 @@ long long numValidator(char *num)
 	{
 		if (num[i] == '+' || num[i] == '-')
 			signsCount++;
-		if ((!isnumber(num[i]) && num[i] != '+' && num[i] != '-') ||
+		if ((!isdigit(num[i]) && num[i] != '+' && num[i] != '-') ||
 				signsCount > 1)
 		{
 			ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", num, num + i);
@@ -46,50 +46,47 @@ void setSpecifiedOptions(char *arg, char ***arguments)
 
 	while (*arg)
 	{
-		if (*arg == 'v')
-			ping_struct->options.verboseIsSpecified = true;
-		else if (*arg == '?')
-			ping_struct->options.usageIsSpecified = true;
-		else if (*arg == 'c' || *arg == 'W')
+		switch (*arg)
 		{
+		case 'v':
+			ping_struct->options.verboseIsSpecified = true;
+			break;
+		case '?':
+			ping_struct->options.usageIsSpecified = true;
+			break;
+		case 'c':
+		case 'W':
 			if (*(arg + 1))
 			{
-				ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", arg, arg);
-			}
-			if (*(argv + 1) && argv++)
-			{
-				if (*arg == 'c')
-				{
-					ping_struct->options.countIsSpecified = numValidator(*argv);
-				}
-				else
-				{
-					ping_struct->options.timeToWaitResponse = numValidator(*argv);
-					if (ping_struct->options.timeToWaitResponse > INT_MAX)
-					{
-						ft_error_printf(1, "ft_ping: option value too big: %lld\n",
-														ping_struct->options.timeToWaitResponse);
-					}
-					else if (ping_struct->options.timeToWaitResponse < 0)
-					{
-						ft_error_printf(1, "ft_ping: option value too small: %lld\n",
-														ping_struct->options.timeToWaitResponse);
-					}
-				}
+				if (!isdigit(*(arg + 1)) && *(arg + 1) != '+' && *(arg + 1) != '-')
+					ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", arg, arg);
+				checkAndSetOptionAmount(*arg, arg + 1);
+				return;
 			}
 			else
 			{
-				ft_error_printf(1, "ft_ping: option requires an argument -- '%c'\n\
+				if (*(argv + 1) && argv++)
+					checkAndSetOptionAmount(*arg, *argv);
+				else
+				{
+					ft_error_printf(1, "ft_ping: option requires an argument -- '%c'\n\
 Try 'ft_ping -?' for more information.\n",
-												*arg);
+													*arg);
+				}
+				// * skip the packets count argument for the next loop
+				(*arguments)++;
 			}
-			// * skip the packets count argument for the next loop
-			(*arguments)++;
-		}
-		else if (*arg == 'q')
+			break;
+		case 'q':
 			ping_struct->options.quitModeIsSpecified = true;
-		else
+			break;
+		case 'd':
+			ping_struct->options.debugModeIsSpecified = true;
+			break;
+		default:
 			ft_error_printf(1, "ft_ping: invalid option -- '%c'\n", *arg);
+			break;
+		}
 		arg++;
 	}
 }
@@ -141,4 +138,21 @@ void argumentsChecker(char **args)
 		}
 		args++;
 	}
+}
+
+void checkAndSetOptionAmount(char arg, char *value)
+{
+	if (arg == 'c')
+		ping_struct->options.countAmount = numValidator(value);
+	else
+		ping_struct->options.timeOutAmount = numValidator(value);
+	if (arg == 'c' && ping_struct->options.countAmount > 0)
+		ping_struct->options.countIsSpecified = true;
+	else if (arg == 'W' && ping_struct->options.timeOutAmount > 0 &&
+					 ping_struct->options.timeOutAmount <= INT_MAX)
+		ping_struct->options.timeOutIsSpecified = true;
+	if (arg == 'W' && (ping_struct->options.timeOutAmount < 0 || ping_struct->options.timeOutAmount > INT_MAX))
+		ft_error_printf(1, "ft_ping: option value too big: %ld\n", ping_struct->options.timeOutAmount);
+	else if (arg == 'W' && ping_struct->options.timeOutAmount == 0)
+		ft_error_printf(1, "ft_ping: option value too small: %ld\n", ping_struct->options.timeOutAmount);
 }

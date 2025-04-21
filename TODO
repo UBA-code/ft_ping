@@ -4,6 +4,9 @@
 === not necessary that the argument follow one pattern (-v?, -v 127.0.0.1, 127.0.0.1 -v)
 === the program must expect ip and flags
 === different display message in ip and hostname
+=== freeaddrinfo
+=== protecting every allocation
+=== -c1 is valid
 
 # must check
 !== fixing the 0 packet trans, 0 recv

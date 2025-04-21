@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_ping.h"
+#include "../../includes/ft_ping.h"
 
 void pushEnd(rtt_list_head *head, double rtt)
 {

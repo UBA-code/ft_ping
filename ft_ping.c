@@ -6,11 +6,13 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/18 10:11:13 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/20 21:06:24 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/ft_ping.h"
+
+ping *ping_struct;
 
 void ft_error(int code, char *msg, bool readErrno)
 {
@@ -53,6 +55,8 @@ Try 'ft_ping -?' for more information.",
 
 	argumentsChecker(av + 1);
 
+	// printSpecifiedOptions();
+
 	if (ping_struct->options.usageIsSpecified)
 		printUsage();
 
@@ -60,4 +64,22 @@ Try 'ft_ping -?' for more information.",
 	signal(SIGINT, finisher);
 	pinger();
 	return 0;
+}
+
+void printSpecifiedOptions()
+{
+	printf("-?: %d\n", ping_struct->options.usageIsSpecified);
+	printf("-v: %d\n", ping_struct->options.verboseIsSpecified);
+	printf("### bonus ###\n");
+	if (ping_struct->options.countIsSpecified)
+		printf("-c: %lld\n", ping_struct->options.countAmount);
+	else
+		printf("-c: %d\n", ping_struct->options.countIsSpecified);
+	if (ping_struct->options.timeOutIsSpecified)
+		printf("-W: %lld\n", ping_struct->options.timeOutAmount);
+	else
+		printf("-W: %d\n", ping_struct->options.timeOutIsSpecified);
+	printf("-d: %d\n", ping_struct->options.debugModeIsSpecified);
+	printf("-q: %d\n", ping_struct->options.quitModeIsSpecified);
+	exit(0);
 }
