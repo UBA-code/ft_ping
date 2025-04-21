@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/20 19:51:06 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/21 09:10:50 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void pinger()
 	hints.ai_protocol = IPPROTO_ICMP;
 
 	if (ping_struct->options.debugModeIsSpecified &&
-			setsockopt(ping_struct->socket, SOL_SOCKET, SO_DEBUG, &timeout, sizeof(timeout)))
-		ft_error(1, "Error: setsockopt failed", false);
+			setsockopt(ping_struct->socket, SOL_SOCKET, SO_DEBUG, &timeout, sizeof(timeout)) < 0)
+		ft_error(1, "ft_ping: setsockopt()", true);
 
 	if (getaddrinfo(ping_struct->host, NULL, &hints, &results))
 		ft_error(1, "unknown host", false);
@@ -69,7 +69,7 @@ void pinger()
 			if (gettimeofday(&endTime, NULL))
 				ft_error(1, "gettimeofday failed", false);
 
-			bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, NULL);
+			bytesReceived = recvfrom(ping_struct->socket, &recvBuffer, sizeof(recvBuffer), 0, (struct sockaddr *)results, &results->ai_addrlen);
 
 			//* extract the ip header and the icmp reply
 			ipHeader = (ip_hdr *)recvBuffer;
