@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 18:01:04 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:05:40 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,146 +14,132 @@
 
 int isSupportedArgument(char arg)
 {
-	return (arg != 'v' && arg != '?' && arg != 'c' && arg != 'q' && arg != 'd' && arg != 'W');
+  return (arg != 'v' && arg != '?' && arg != 'c' && arg != 'q' && arg != 'd' && arg != 'W' && arg != 'w');
 }
 
 long long numValidator(char *num)
 {
-	long long number = 0;
-	int sign = 1;
-	int signsCount = 0;
+  long long number = 0;
+  int sign = 1;
+  int signsCount = 0;
 
-	for (size_t i = 0; i < strlen(num); i++)
-	{
-		if (num[i] == '+' || num[i] == '-')
-			signsCount++;
-		if ((!isdigit(num[i]) && num[i] != '+' && num[i] != '-') ||
-				signsCount > 1)
-		{
-			ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", num, num + i);
-		}
-		if (num[i] == '-')
-			sign = -1;
-		else if (num[i] != '+')
-			number = number * 10 + num[i] - '0';
-	}
-	return number * sign;
+  for (size_t i = 0; i < strlen(num); i++)
+  {
+    if (num[i] == '+' || num[i] == '-')
+      signsCount++;
+    if ((!isdigit(num[i]) && num[i] != '+' && num[i] != '-') ||
+        signsCount > 1)
+    {
+      ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", num, num);
+    }
+    if (num[i] == '-')
+      sign = -1;
+    else if (num[i] != '+')
+      number = number * 10 + num[i] - '0';
+  }
+  return number * sign;
 }
 
 void setSpecifiedOptions(char *arg, char ***arguments)
 {
-	char **argv = *arguments;
+  char **argv = *arguments;
 
-	while (*arg)
-	{
-		switch (*arg)
-		{
-		case 'v':
-			ping_struct->options.verboseIsSpecified = true;
-			break;
-		case '?':
-			ping_struct->options.usageIsSpecified = true;
-			break;
-		case 'c':
-		case 'W':
-			if (*(arg + 1))
-			{
-				if (!isdigit(*(arg + 1)) && *(arg + 1) != '+' && *(arg + 1) != '-')
-					ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", arg, arg);
-				checkAndSetOptionAmount(*arg, arg + 1);
-				return;
-			}
-			else
-			{
-				if (*(argv + 1) && argv++)
-					checkAndSetOptionAmount(*arg, *argv);
-				else
-				{
-					ft_error_printf(1, "ft_ping: option requires an argument -- '%c'\n\
+  while (*arg)
+  {
+    switch (*arg)
+    {
+    case 'v':
+      ping_struct->options.verboseIsSpecified = true;
+      break;
+    case '?':
+      ping_struct->options.usageIsSpecified = true;
+      break;
+    case 'w':
+    case 'c':
+    case 'W':
+      if (*(arg + 1))
+      {
+        if (!isdigit(*(arg + 1)) && *(arg + 1) != '+' && *(arg + 1) != '-')
+          ft_error_printf(1, "ft_ping: invalid value (`%s' near `%s')\n", arg + 1, arg + 1);
+        checkAndSetOptionAmount(*arg, arg + 1);
+        return;
+      }
+      else
+      {
+        if (*(argv + 1) && argv++)
+          checkAndSetOptionAmount(*arg, *argv);
+        else
+        {
+          ft_error_printf(1, "ft_ping: option requires an argument -- '%c'\n\
 Try 'ft_ping -?' for more information.\n",
-													*arg);
-				}
-				// * skip the packets count argument for the next loop
-				(*arguments)++;
-			}
-			break;
-		case 'q':
-			ping_struct->options.quitModeIsSpecified = true;
-			break;
-		case 'd':
-			ping_struct->options.debugModeIsSpecified = true;
-			break;
-		default:
-			ft_error_printf(1, "ft_ping: invalid option -- '%c'\n", *arg);
-			break;
-		}
-		arg++;
-	}
-}
-
-void ipValidator(char *address)
-{
-	(void)address;
-}
-
-// * 10.103.13.4
-// * localhost
-// * http://localhost
-// * https://10.2.0.0
-
-void addressValidator(char *address)
-{
-	if (isdigit(*address))
-		ipValidator(address);
-	else if (isalpha(*address))
-		;
-	else
-		ft_error_printf(2, "ft_ping: %s: Name or service not known\n", address);
+                          *arg);
+        }
+        // * skip the packets count argument for the next loop
+        (*arguments)++;
+      }
+      break;
+    case 'q':
+      ping_struct->options.quitModeIsSpecified = true;
+      break;
+    case 'd':
+      ping_struct->options.debugModeIsSpecified = true;
+      break;
+    default:
+      ft_error_printf(64, "ft_ping: invalid option -- '%c'\n\
+Try 'ping -?' for more information.\n",
+                      *arg);
+      break;
+    }
+    arg++;
+  }
 }
 
 void argumentsChecker(char **args)
 {
-	while (*args)
-	{
-		//* check if current argument is a flag
-		if (**args == '-')
-		{
-			++(*args);
-			//* -- is valid
-			if (**args == '-')
-				++(*args);
-			//* check that the arguments are valid before check each one
-			for (char *currentArg = *args; *currentArg; currentArg++)
-			{
-				if (isSupportedArgument(**args))
-				{
-					ft_error_printf(1, "ft_ping: invalid value (`%c' near `%c')\n", *currentArg, *currentArg);
-				}
-			}
-			setSpecifiedOptions(*args, &args);
-		}
-		else
-		{
-			addressValidator(*args);
-			addHost(ping_struct->hostsHead, *args);
-		}
-		args++;
-	}
+  while (*args)
+  {
+    //* check if current argument is a flag
+    if (**args == '-')
+    {
+      ++(*args);
+      //* -- is valid
+      if (**args == '-')
+        ++(*args);
+
+      setSpecifiedOptions(*args, &args);
+    }
+    else
+      addHost(ping_struct->hostsHead, *args);
+    args++;
+  }
 }
 
 void checkAndSetOptionAmount(char arg, char *value)
 {
-	if (arg == 'c')
-		ping_struct->options.countAmount = numValidator(value);
-	else
-		ping_struct->options.timeOutAmount = numValidator(value);
-	if (arg == 'c' && ping_struct->options.countAmount > 0)
-		ping_struct->options.countIsSpecified = true;
-	else if (arg == 'W' && ping_struct->options.timeOutAmount > 0 &&
-					 ping_struct->options.timeOutAmount <= INT_MAX)
-		ping_struct->options.timeOutIsSpecified = true;
-	if (arg == 'W' && (ping_struct->options.timeOutAmount < 0 || ping_struct->options.timeOutAmount > INT_MAX))
-		ft_error_printf(1, "ft_ping: option value too big: %ld\n", ping_struct->options.timeOutAmount);
-	else if (arg == 'W' && ping_struct->options.timeOutAmount == 0)
-		ft_error_printf(1, "ft_ping: option value too small: %ld\n", ping_struct->options.timeOutAmount);
+  if (arg == 'c')
+    ping_struct->options.countAmount = numValidator(value);
+  else if (arg == 'W')
+    ping_struct->options.timeOutAmount = numValidator(value);
+  else
+    ping_struct->options.stopAfterAmount = numValidator(value);
+  if (arg == 'c' && ping_struct->options.countAmount > 0)
+    ping_struct->options.countIsSpecified = true;
+  else if (arg == 'W' && IS_VALID_RANGE(ping_struct->options.timeOutAmount))
+    ping_struct->options.timeOutIsSpecified = true;
+  else if (arg == 'w' && IS_VALID_RANGE(ping_struct->options.stopAfterAmount))
+    ping_struct->options.stopAfterIsSpecified = true;
+
+  if (arg == 'W' && (!IS_VALID_RANGE(ping_struct->options.timeOutAmount)))
+  {
+    if (ping_struct->options.timeOutAmount == 0)
+      ft_error_printf(1, "ft_ping: option value too small: %s\n", value);
+    ft_error_printf(1, "ft_ping: option value too big: %s\n", value);
+  }
+
+  if (arg == 'w' && (!IS_VALID_RANGE(ping_struct->options.stopAfterAmount)))
+  {
+    if (ping_struct->options.stopAfterAmount == 0)
+      ft_error_printf(1, "ft_ping: option value too small: %s\n", value);
+    ft_error_printf(1, "ft_ping: option value too big: %s\n", value);
+  }
 }
