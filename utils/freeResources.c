@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 14:47:55 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 17:55:47 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:20:53 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ void freeResources()
 		free(ping_struct);
 		ping_struct = NULL;
 	}
-	system("leaks ft_ping");
+	// system("leaks ft_ping");
 }

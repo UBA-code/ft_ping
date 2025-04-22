@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:17 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 16:49:06 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:14:58 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void pushEnd(rtt_list_head *head, double rtt)
 	rtt_node *node = calloc(sizeof(rtt_node), sizeof(rtt_node));
 	rtt_node *current = head->node;
 
+	if (!node)
+		ft_error(1, "rtt_node Memory allocation failed", false);
 	//* create a node with the specefied rtt
 	node->rtt = rtt;
 	node->next = 0;

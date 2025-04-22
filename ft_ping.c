@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 17:53:42 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:14:22 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ Try 'ft_ping -?' for more information.",
 	}
 
 	ping_struct = calloc(sizeof(ping), sizeof(ping));
+	if (!ping_struct)
+		ft_error(1, "ping_struct Memory allocation failed", false);
 	initialize_struct();
 
 	argumentsChecker(av + 1);
@@ -92,6 +94,8 @@ void resetStruct(const ping const_ping_struct)
 	freePendingPackets(&ping_struct->pendingPacketsHead);
 	cleanList(ping_struct->rttListHead);
 	ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
+	if (!ping_struct->rttListHead)
+		ft_error(1, "rttListHead Memory allocation failed", false);
 	ping_struct->rttListHead->node = 0;
 }
 

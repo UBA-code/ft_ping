@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:05:36 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 16:45:07 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:11:25 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ void addHost(t_host *head, char *host)
 	newHost->host = strdup(host);
 	if (!newHost->host)
 	{
-		perror("Failed to duplicate host string");
 		free(newHost);
+		perror("Failed to duplicate host string");
+		freeResources();
 		exit(EXIT_FAILURE);
 	}
 	if (!head)
@@ -49,4 +50,6 @@ void freeHosts(t_host *head)
 		free(current);
 		current = next;
 	}
+	if (ping_struct->hostsHead)
+		ping_struct->hostsHead = NULL;
 }

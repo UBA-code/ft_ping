@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:19 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 15:49:48 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:14:28 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void initialize_struct()
 	ping_struct->options.timeOutAmount = RESPONSE_WAIT_TIME;
 
 	ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
+	if (!ping_struct->rttListHead)
+		ft_error(1, "rttListHead Memory allocation failed", false);
 	ping_struct->rttListHead->node = 0;
 	gettimeofday(&ping_struct->programStartTime, NULL);
 }

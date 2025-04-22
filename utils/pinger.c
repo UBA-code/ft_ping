@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/21 18:08:20 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/22 06:19:36 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void pinger(char *host, bool once)
 			reply->checksum = 0;
 
 			//* if the icmp type is reply and the id match the pid that's mean the packet is for us
-			if (reply->type == ICMP_ECHOREPLY && reply->id == ping_struct->icmpHeader.id && bytesReceived >= 0 && tempChecksum == calcCheckSum(reply, bytesReceived - sizeof(ip_hdr)))
+			if (reply->type == ICMP_ECHOREPLY && reply->id == ping_struct->icmpHeader.id && bytesReceived > 0 && tempChecksum == calcCheckSum(reply, bytesReceived - sizeof(ip_hdr)))
 			{
 				if (isValidPacket(&ping_struct->pendingPacketsHead, reply->sequence))
 					progressValidReply(
