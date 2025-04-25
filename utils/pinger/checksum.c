@@ -6,11 +6,11 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:23 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/18 13:09:59 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/25 11:26:08 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_ping.h"
+#include "../../includes/ft_ping.h"
 
 u_short calcCheckSum(void *packet, int length)
 {

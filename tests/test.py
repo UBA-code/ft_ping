@@ -40,6 +40,11 @@ def run_test(title, arguments, printDiff=False):
     time_match = compare_ping_times(output1, output2)
     norm_match = normalize_output(output1) == normalize_output(output2)
     status_match = (status1 == status2)
+
+    # if last argument specified and verbose
+    if len(sys.argv) > 4 and sys.argv[3] == "verbose":
+        print("Output 1:\n", normalize_output(output1))
+        print("Output 2:\n", normalize_output(output2))
     
     if norm_match and time_match and status_match:
         print("✅ PASS: Full match (output, times, and status)")
@@ -61,6 +66,7 @@ def run_test(title, arguments, printDiff=False):
 
 # Example usage:
 if __name__ == "__main__":
+
     print("Running comparison test...")
     print("✅ PASS: Outputs and status codes match!")
     print("☑️ PARTIAL PASS: Status codes match, but outputs differ!")
@@ -73,8 +79,8 @@ if __name__ == "__main__":
     )
 
     run_test(
-        "Test with invalid ip <0.1>",
-        "0.1",
+        "Test with invalid ip <1234.0.0.0>",
+        "1234.0.0.0",
     )
 
     print("" + "=" * 50)

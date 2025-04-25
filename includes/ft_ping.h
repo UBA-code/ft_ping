@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 14:48:40 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:25:07 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,13 @@
 #include <sys/time.h>
 #include <signal.h>
 
+#define TTL_VALUE 64
 #define RESPONSE_WAIT_TIME 10
 #define TIME_BETWEEN_PACKETS 1
 #define IP_HEADER_SIZE 20
 #define ICMP_PACKET_SIZE 64
 #define ECHO_REQUEST_CODE 0
+#define ICMP_HEADER_SIZE 8
 
 #define IS_VALID_RANGE(value) ((value) >= 1 && (value) <= INT_MAX)
 
@@ -66,7 +68,7 @@ typedef struct s_icmp_hdr
 //* define a ip header (problem: different os implementation)
 typedef struct s_ip_hdr
 {
-  uint8_t ver : 4, hel : 4, type;
+  uint16_t verhdrlen;
   uint16_t length;
   uint16_t datagramId;
   uint8_t flags : 3;
@@ -74,6 +76,7 @@ typedef struct s_ip_hdr
   uint8_t ttl, proto;
   uint16_t checksum;
   uint32_t sourceIp, destIp;
+  char *data;
 } ip_hdr;
 
 typedef struct s_ping_options
@@ -163,5 +166,6 @@ void checkAndSetOptionAmount(char arg, char *value);
 void addHost(t_host *head, char *host);
 void freeHosts(t_host *head);
 void resetStruct(const ping const_ping_struct);
+void progressInvalidReply(char *recvBuffer, int bytesReceived, char *ip_str, ip_hdr *ipHeader);
 
 #endif
