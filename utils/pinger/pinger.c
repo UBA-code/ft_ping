@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 20:09:12 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:18:28 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void pinger(char *host, bool once)
   struct timeval timeout = {1, 0};
   struct timeval sendingTime = {0, 0};
   int ttl = TTL_VALUE;
+  struct timeval measuringTime;
 
   bzero(&ip_str, sizeof(ip_str));
   bzero(&hints, sizeof(struct addrinfo));
@@ -125,7 +126,9 @@ void pinger(char *host, bool once)
         progressInvalidReply(
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
-    // usleep(100);
+    gettimeofday(&measuringTime, NULL);
+    usleep(100);
+    printTime(&measuringTime);
   }
   freeaddrinfo(ping_struct->results);
   ping_struct->results = NULL;
