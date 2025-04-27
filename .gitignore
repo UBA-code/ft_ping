@@ -2,3 +2,4 @@
 .vscode
 my_ping.txt
 standard_ping.txt
+*.log

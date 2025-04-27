@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/25 15:25:07 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 18:35:32 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ typedef struct s_ip_hdr
   uint16_t verhdrlen;
   uint16_t length;
   uint16_t datagramId;
-  uint8_t flags : 3;
-  uint16_t fragmentOffset : 13;
+  uint16_t flagsFragmentOffset;
   uint8_t ttl, proto;
   uint16_t checksum;
   uint32_t sourceIp, destIp;

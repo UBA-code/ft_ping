@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:38:34 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/25 15:06:45 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 18:36:17 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ void progressInvalidReply(char *recvBuffer, int bytesReceived, char *ip_str, ip_
   {
     printf("IP Hdr Dump: \n");
     printf(" %04x ", ntohs(oldPacketIpHeader->verhdrlen));
-    printf("%04x ", oldPacketIpHeader->length);
+    printf("%04x ", ntohs(oldPacketIpHeader->length));
     printf("%04x ", ntohs(oldPacketIpHeader->datagramId));
-    printf("%04x ", ntohs(oldPacketIpHeader->flags));
+    printf("%04x ", ntohs(oldPacketIpHeader->flagsFragmentOffset));
     printf("%02x%02x ", oldPacketIpHeader->ttl, oldPacketIpHeader->proto);
     printf("%04x ", ntohs(oldPacketIpHeader->checksum));
     printf("%04x %04x", ntohs(((uint16_t *)&oldPacketIpHeader->sourceIp)[0]), ntohs(((uint16_t *)&oldPacketIpHeader->sourceIp)[1]));
@@ -47,13 +47,13 @@ void progressInvalidReply(char *recvBuffer, int bytesReceived, char *ip_str, ip_
     printf("\n");
 
     printf("Vr\tHL\tTOS\tLen\tID\tFlg\toff\tTTL\tPro\tcks\tSrc\tDst\tData\n");
-    printf(" %x\t", oldPacketIpHeader->verhdrlen >> 4);  // get the first 4 bits
-    printf("%x\t", oldPacketIpHeader->verhdrlen & 0x0f); // get the last 4 bits
-    printf("%02x\t", ((char *)oldPacketIpHeader)[1]);    // get the second byte
-    printf("%04x\t", oldPacketIpHeader->length);
+    printf(" %x\t", (ntohs(oldPacketIpHeader->verhdrlen) & 0xF000) >> 12); // get the first 4 bits ver
+    printf("%x\t", (ntohs(oldPacketIpHeader->verhdrlen) & 0x0F00) >> 8);     // get the last 4 bits hdrlen
+    printf("%02x\t", ntohs(oldPacketIpHeader->verhdrlen) & 0x00FF);         // get the second byte TOS
+    printf("%04x\t", ntohs(oldPacketIpHeader->length));
     printf("%04x\t", ntohs(oldPacketIpHeader->datagramId));
-    printf("%x\t", ntohs(oldPacketIpHeader->flags));
-    printf("%04x\t", ntohs(oldPacketIpHeader->fragmentOffset));
+    printf("%x\t", (ntohs(oldPacketIpHeader->flagsFragmentOffset) & 0xE000) >> 13); // get the FLAGS
+    printf("%04x\t", ntohs(oldPacketIpHeader->flagsFragmentOffset) >> 8);           // get the OFFSET
     printf("%02x\t", oldPacketIpHeader->ttl);
     printf("%02x\t", oldPacketIpHeader->proto);
     printf("%04x\t", ntohs(oldPacketIpHeader->checksum));
