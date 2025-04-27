@@ -1,8 +1,8 @@
 #!/bin/bash
 
-../ft_ping -c 1000 $1 > ft_ping.log &
+../ft_ping -c 10 $1 > ft_ping.log &
 
-ping -c 1000 $1 > ping.log &
+ping -c 10 $1 > ping.log &
 
 wait
 

@@ -145,13 +145,15 @@ if __name__ == "__main__":
     run_test(
         "Test latency <8.8.8.8 -c10>",
         "8.8.8.8 -c10")
+
     if len(sys.argv) == 5 and sys.argv[4] == 'deep':
         run_test(
         "Test latency with big packets <8.8.8.8 -c100>",
         "8.8.8.8 -c100")
         run_test(
         "Test latency with big packets <localhost -c100>",
-        "localhost -c100"
+        "localhost -c100")
+
     if len(sys.argv) < 4 or not sys.argv[3] == "latency":
       run_test(
           "Test value number range <localhost -W-1>",
