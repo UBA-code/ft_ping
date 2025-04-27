@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:37:47 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 15:43:09 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:02:32 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,7 @@ void addPacketToList(PendingPacket **head, uint16_t seq)
   if (!new)
     ft_error(1, "malloc failed", false);
   new->seq = seq;
-  //* add 1 second to the sent time for the sleep time between each packet
   gettimeofday(&new->sent_time, NULL);
-  new->sent_time.tv_sec += 1;
   new->next = NULL;
   if (*head == NULL)
   {

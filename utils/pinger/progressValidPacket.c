@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:37:51 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/25 11:37:55 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:03:02 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void progressValidReply(
 {
   PendingPacket *packet = getPacketFromList(reply->sequence);
   //* calc the round trip time
-  *rtt = (endTime.tv_sec - (packet->sent_time.tv_sec - 1)) * 1000.0 + (endTime.tv_usec - packet->sent_time.tv_usec) / 1000.0; //* we remove the 1 second added to the sent time
+  *rtt = (endTime.tv_sec - packet->sent_time.tv_sec) * 1000.0 + (endTime.tv_usec - packet->sent_time.tv_usec) / 1000.0;
 
   //* set the max and min round-trip-time values
   if (*rtt > ping_struct->max_rtt)
