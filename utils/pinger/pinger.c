@@ -6,23 +6,20 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 20:18:28 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:37:57 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ping.h"
 
-// take start time and measure the time between the start and the end
-// and print the time
-void printTime(struct timeval *start)
+//* measure the time between two points
+float measureTime(struct timeval *start)
 {
   struct timeval endTime;
-  double rtt;
 
   if (gettimeofday(&endTime, NULL))
     ft_error(1, "gettimeofday failed", false);
-  rtt = (endTime.tv_sec - start->tv_sec) * 1000.0 + (endTime.tv_usec - start->tv_usec) / 1000.0;
-  printf("=== takes %.3f ms ===\n", rtt);
+  return (endTime.tv_sec - start->tv_sec) * 1000.0 + (endTime.tv_usec - start->tv_usec) / 1000.0;
 }
 
 //* is once true, send one packet and exit without waiting for reply
@@ -34,7 +31,8 @@ void pinger(char *host, bool once)
   struct timeval timeout = {1, 0};
   struct timeval sendingTime = {0, 0};
   int ttl = TTL_VALUE;
-  struct timeval measuringTime;
+  struct timeval timeBeforeSleep;
+  float totalTimeUsleepTake = 0.0;
 
   bzero(&ip_str, sizeof(ip_str));
   bzero(&hints, sizeof(struct addrinfo));
@@ -120,15 +118,15 @@ void pinger(char *host, bool once)
       {
         if (isValidPacket(&ping_struct->pendingPacketsHead, reply->sequence))
           progressValidReply(
-              &rtt, endTime, ip_str, reply, ipHeader, bytesReceived);
+              &rtt, endTime, ip_str, reply, ipHeader, bytesReceived, totalTimeUsleepTake);
       }
       else if (reply->code == ICMP_ECHOREPLY && reply->type == ICMP_TIMXCEED && bytesReceived >= 56)
         progressInvalidReply(
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
-    gettimeofday(&measuringTime, NULL);
+    gettimeofday(&timeBeforeSleep, NULL);
     usleep(100);
-    printTime(&measuringTime);
+    totalTimeUsleepTake = measureTime(&timeBeforeSleep);
   }
   freeaddrinfo(ping_struct->results);
   ping_struct->results = NULL;

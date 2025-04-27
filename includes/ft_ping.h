@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:07 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 18:35:32 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:35:03 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void freeResources();
 void ft_error_printf(int errCode, char *format, ...);
 void progressValidReply(
     float *rtt, struct timeval endTime,
-    char *ip_str, icmp_hdr *reply, ip_hdr *ipHeader, int bytesReceived);
+    char *ip_str, icmp_hdr *reply, ip_hdr *ipHeader, int bytesReceived, float accumulatedSleepTime);
 void addPacketToList(PendingPacket **head, uint16_t seq);
 PendingPacket *removePacketFromList(uint16_t seq);
 void freePendingPackets(PendingPacket **head);

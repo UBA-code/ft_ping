@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:37:51 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 20:03:02 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:36:19 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 void progressValidReply(
     float *rtt, struct timeval endTime,
-    char *ip_str, icmp_hdr *reply, ip_hdr *ipHeader, int bytesReceived)
+    char *ip_str, icmp_hdr *reply, ip_hdr *ipHeader, int bytesReceived, float accumulatedSleepTime)
 {
   PendingPacket *packet = getPacketFromList(reply->sequence);
   //* calc the round trip time
   *rtt = (endTime.tv_sec - packet->sent_time.tv_sec) * 1000.0 + (endTime.tv_usec - packet->sent_time.tv_usec) / 1000.0;
+
+  if (*rtt - accumulatedSleepTime > 0)
+    *rtt -= accumulatedSleepTime;
 
   //* set the max and min round-trip-time values
   if (*rtt > ping_struct->max_rtt)
