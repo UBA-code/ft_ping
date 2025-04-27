@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:36:27 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/25 11:36:46 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 19:51:41 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ void sendPacket(struct addrinfo *results, struct timeval *sendingTime, bool inst
        (!ping_struct->options.countIsSpecified || ping_struct->options.countAmount > 0)) ||
       instant) //* 1000ms = 1 second, send request each second
   {
-    addPacketToList(&ping_struct->pendingPacketsHead, ping_struct->icmpHeader.sequence);
     //* send the packet
     if (
         sendto(ping_struct->socket, &ping_struct->icmpHeader, ICMP_PACKET_SIZE, 0, results->ai_addr, results->ai_addrlen) == -1)
     {
       ft_error(1, "ft_ping: sending packet", true);
     }
+    addPacketToList(&ping_struct->pendingPacketsHead, ping_struct->icmpHeader.sequence);
 
     gettimeofday(sendingTime, NULL);
     //* increment the packet transmitted if the sendTo run successfully
