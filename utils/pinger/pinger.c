@@ -6,11 +6,24 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 20:02:50 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 20:09:12 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ping.h"
+
+// take start time and measure the time between the start and the end
+// and print the time
+void printTime(struct timeval *start)
+{
+  struct timeval endTime;
+  double rtt;
+
+  if (gettimeofday(&endTime, NULL))
+    ft_error(1, "gettimeofday failed", false);
+  rtt = (endTime.tv_sec - start->tv_sec) * 1000.0 + (endTime.tv_usec - start->tv_usec) / 1000.0;
+  printf("=== takes %.3f ms ===\n", rtt);
+}
 
 //* is once true, send one packet and exit without waiting for reply
 void pinger(char *host, bool once)
@@ -112,7 +125,7 @@ void pinger(char *host, bool once)
         progressInvalidReply(
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
-    usleep(100);
+    // usleep(100);
   }
   freeaddrinfo(ping_struct->results);
   ping_struct->results = NULL;
