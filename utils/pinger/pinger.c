@@ -61,8 +61,16 @@ void pinger(char *host, bool once)
       if (timeElpasedSinceProgramStart >= ping_struct->options.stopAfterAmount * 1000.0)
         finisher(true, false);
     }
+    clock_t start, end;
+    double cpu_time_used;
+
+    start = clock();
     if (removeExpiredPackets())
       break;
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    if (cpu_time_used > 1.0)
+      printf("=== time used: %f ===\n", cpu_time_used);
     struct timeval endTime;
     float rtt; //* round trip time
     int bytesReceived = -1;
