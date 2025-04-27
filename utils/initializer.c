@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:19 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 15:00:23 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 19:38:41 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,43 @@
 
 void initialize_struct()
 {
-	ping_struct->hostsHead = NULL;
-	ping_struct->pendingPacketsHead = NULL;
-	//* Create socket of type raw and icmp protocol
-	ping_struct->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+  ping_struct->hostsHead = NULL;
+  ping_struct->pendingPacketsHead = NULL;
+  //* Create socket of type raw and icmp protocol
+  ping_struct->socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 
-	//* check if socket failed
-	if (ping_struct->socket == -1)
-		ft_error(1, "failed to create socket", false);
+  //* check if socket failed
+  if (ping_struct->socket == -1)
+    ft_error(1, "failed to create socket", false);
 
-	//* fill the icmp header
-	ping_struct->icmpHeader.type = ICMP_ECHO;
-	ping_struct->icmpHeader.code = ECHO_REQUEST_CODE;
-	ping_struct->icmpHeader.id = getpid();
-	ping_struct->icmpHeader.sequence = 0;
-	ping_struct->icmpHeader.checksum = calcCheckSum(&ping_struct->icmpHeader, 64);
-	ping_struct->results = NULL;
+  //* fill the icmp header
+  ping_struct->icmpHeader.type = ICMP_ECHO;
+  ping_struct->icmpHeader.code = ECHO_REQUEST_CODE;
+  ping_struct->icmpHeader.id = getpid();
+  ping_struct->icmpHeader.sequence = 0;
+  ping_struct->icmpHeader.checksum = calcCheckSum(&ping_struct->icmpHeader, 64);
+  ping_struct->results = NULL;
 
-	//* initialize some propeties
-	ping_struct->packetsTransmitted = 0;
-	ping_struct->packetReceived = 0;
-	ping_struct->min_rtt = -1;
-	ping_struct->max_rtt = 0;
-	ping_struct->avg_rtt = 0;
-	ping_struct->options.countIsSpecified = false;
-	ping_struct->options.countAmount = 0;
-	ping_struct->options.debugModeIsSpecified = false;
-	ping_struct->options.timeOutIsSpecified = false;
-	ping_struct->options.timeOutAmount = RESPONSE_WAIT_TIME;
+  //* initialize some propeties
+  ping_struct->packetsTransmitted = 0;
+  ping_struct->packetReceived = 0;
+  ping_struct->min_rtt = -1;
+  ping_struct->max_rtt = 0;
+  ping_struct->avg_rtt = 0;
+  ping_struct->options.countIsSpecified = false;
+  ping_struct->options.countAmount = 0;
+  ping_struct->options.debugModeIsSpecified = false;
+  ping_struct->options.timeOutIsSpecified = false;
+  ping_struct->options.timeOutAmount = RESPONSE_WAIT_TIME;
   ping_struct->options.stopAfterIsSpecified = false;
   ping_struct->options.stopAfterAmount = 0;
   ping_struct->somePacketsIsExpired = false;
 
-	ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
-	if (!ping_struct->rttListHead)
-		ft_error(1, "rttListHead Memory allocation failed", false);
-	ping_struct->rttListHead->node = 0;
-	gettimeofday(&ping_struct->programStartTime, NULL);
+  FD_ZERO(&ping_struct->readFds);
+  FD_SET(ping_struct->socket, &ping_struct->readFds);
+  ping_struct->rttListHead = calloc(sizeof(rtt_list_head), sizeof(rtt_list_head));
+  if (!ping_struct->rttListHead)
+    ft_error(1, "rttListHead Memory allocation failed", false);
+  ping_struct->rttListHead->node = 0;
+  gettimeofday(&ping_struct->programStartTime, NULL);
 }

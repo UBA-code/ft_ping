@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/26 18:03:44 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/27 19:39:33 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,9 @@ void pinger(char *host, bool once)
       if (timeElpasedSinceProgramStart >= ping_struct->options.stopAfterAmount * 1000.0)
         finisher(true, false);
     }
-    clock_t start, end;
-    double cpu_time_used;
 
-    start = clock();
     if (removeExpiredPackets())
       break;
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    if (cpu_time_used > 1.0)
-      printf("=== time used: %f ===\n", cpu_time_used);
     struct timeval endTime;
     float rtt; //* round trip time
     int bytesReceived = -1;
@@ -86,12 +79,13 @@ void pinger(char *host, bool once)
     if (once == 1)
       break;
 
-    //* wait for packets
-    FD_ZERO(&ping_struct->readFds);
+    FD_CLR(ping_struct->socket, &ping_struct->readFds);
     FD_SET(ping_struct->socket, &ping_struct->readFds);
-    if (select(ping_struct->socket + 1, &ping_struct->readFds, NULL, NULL, &timeout) == -1 && errno != EINTR) //* eintr is for the signal handler, if the error because of the signal handler it's okey
+    int result = select(ping_struct->socket + 1, &ping_struct->readFds, NULL, NULL, &timeout);
+    //* wait for packets
+    if (result == -1 && errno != EINTR) //* eintr is for the signal handler, if the error because of the signal handler it's okey
       ft_error(1, "select()", true);
-    else if (FD_ISSET(ping_struct->socket, &ping_struct->readFds))
+    else if (result && FD_ISSET(ping_struct->socket, &ping_struct->readFds))
     {
       //* get the end time when the packet came
       if (gettimeofday(&endTime, NULL))
