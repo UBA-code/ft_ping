@@ -30,6 +30,7 @@
 #include <netdb.h>
 #include <math.h>
 #include <sys/time.h>
+#include <time.h>
 #include <signal.h>
 
 #define TTL_VALUE 64
