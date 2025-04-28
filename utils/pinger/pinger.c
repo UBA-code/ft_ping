@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/27 20:37:57 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/28 11:10:17 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,9 +126,9 @@ void pinger(char *host, bool once)
         progressInvalidReply(
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
-    gettimeofday(&timeBeforeSleep, NULL);
-    usleep(10000);
-    totalTimeUsleepTake = measureTime(&timeBeforeSleep);
+    // gettimeofday(&timeBeforeSleep, NULL);
+    nanosleep(&(struct timespec){0, 1000}, NULL);
+    // totalTimeUsleepTake = measureTime(&timeBeforeSleep);
   }
   freeaddrinfo(ping_struct->results);
   ping_struct->results = NULL;
