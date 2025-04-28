@@ -20,9 +20,10 @@ void progressValidReply(
   //* calc the round trip time
   *rtt = (endTime.tv_sec - packet->sent_time.tv_sec) * 1000.0 + (endTime.tv_usec - packet->sent_time.tv_usec) / 1000.0;
 
-  if (*rtt - accumulatedSleepTime > 0)
+  if (*rtt - accumulatedSleepTime > 0) {
+  //printf("==== remove %f of accumulatedSleepTime ====\n", accumulatedSleepTime);
     *rtt -= accumulatedSleepTime;
-
+  }
   //* set the max and min round-trip-time values
   if (*rtt > ping_struct->max_rtt)
     ping_struct->max_rtt = *rtt;

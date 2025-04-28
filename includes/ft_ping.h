@@ -22,6 +22,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <fcntl.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>

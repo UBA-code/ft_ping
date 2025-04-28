@@ -47,6 +47,8 @@ void pinger(char *host, bool once)
   if (setsockopt(ping_struct->socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0)
     ft_error(1, "ft_ping: setsockopt()", true);
 
+  if (fcntl(ping_struct->socket, F_SETFL, fcntl(ping_struct->socket, F_GETFL, 0) | O_NONBLOCK))
+    ft_error(1, "ft_ping: setsockopt()", true);
   if (getaddrinfo(host, NULL, &hints, &ping_struct->results))
     ft_error(1, "unknown host", false);
 
@@ -125,7 +127,7 @@ void pinger(char *host, bool once)
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
     gettimeofday(&timeBeforeSleep, NULL);
-    usleep(100);
+    usleep(10000);
     totalTimeUsleepTake = measureTime(&timeBeforeSleep);
   }
   freeaddrinfo(ping_struct->results);
