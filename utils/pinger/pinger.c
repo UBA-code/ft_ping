@@ -110,7 +110,6 @@ void pinger(char *host, bool once)
         progressInvalidReply(
             recvBuffer, bytesReceived, ip_str, ipHeader);
     }
-    usleep(100);
   }
   freeaddrinfo(ping_struct->results);
   ping_struct->results = NULL;
