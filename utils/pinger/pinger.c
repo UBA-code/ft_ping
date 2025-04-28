@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:15 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/28 11:10:17 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/28 11:18:31 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void pinger(char *host, bool once)
   struct timeval timeout = {1, 0};
   struct timeval sendingTime = {0, 0};
   int ttl = TTL_VALUE;
-  struct timeval timeBeforeSleep;
+  // struct timeval timeBeforeSleep;
   float totalTimeUsleepTake = 0.0;
 
   bzero(&ip_str, sizeof(ip_str));
