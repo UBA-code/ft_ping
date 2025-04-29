@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/29 10:17:50 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/29 16:11:49 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void argumentsChecker(char **args)
     }
     args++;
   }
-  if (!hostFound)
+  if (!hostFound && !ping_struct->options.usageIsSpecified)
   {
     ft_error(64, "\
 missing host operand\n\
