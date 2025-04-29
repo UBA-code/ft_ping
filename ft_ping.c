@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:30:52 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 15:08:08 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:13:33 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,11 @@ Try 'ft_ping -?' for more information.",
     currentHost = currentHost->next;
   }
   if (ping_struct->somePacketsIsExpired || ping_struct->packetReceived == 0)
+  {
+    freeResources();
     return 1;
+  }
+  freeResources();
   return 0;
 }
 

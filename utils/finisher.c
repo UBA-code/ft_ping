@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:21 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 08:52:20 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:01:02 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,12 @@ void finisher(bool cleanResources, bool tryHosts)
   if (tryHosts)
   {
     if (ping_struct->hostsHead)
-      ping_struct->hostsHead = ping_struct->hostsHead->next;
+    {
+      t_host *temp = ping_struct->hostsHead->next;
+      free(ping_struct->hostsHead->host);
+      free(ping_struct->hostsHead);
+      ping_struct->hostsHead = temp;
+    }
     t_host *currentHost = ping_struct->hostsHead;
 
     while (currentHost)

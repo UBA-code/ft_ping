@@ -6,7 +6,7 @@
 /*   By: ybel-hac <ybel-hac@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 00:31:26 by ybel-hac          #+#    #+#             */
-/*   Updated: 2025/04/22 15:05:40 by ybel-hac         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:17:50 by ybel-hac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ Try 'ping -?' for more information.\n",
 
 void argumentsChecker(char **args)
 {
+  bool hostFound = false;
   while (*args)
   {
     //* check if current argument is a flag
@@ -109,8 +110,18 @@ void argumentsChecker(char **args)
       setSpecifiedOptions(*args, &args);
     }
     else
+    {
       addHost(ping_struct->hostsHead, *args);
+      hostFound = true;
+    }
     args++;
+  }
+  if (!hostFound)
+  {
+    ft_error(64, "\
+missing host operand\n\
+Try 'ft_ping -?' for more information.",
+             false);
   }
 }
 
