@@ -1,8 +1,0 @@
-name: ft_ping
-
-services:
-  ping:
-    image: ubacode/ping-machine
-    container_name: ft_ping
-    volumes:
-      - .:/work/ft_ping
